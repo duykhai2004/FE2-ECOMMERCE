@@ -7,9 +7,16 @@ import Heading from "../components/products/Heading";
 import Button from "../components/products/Button";
 import ItemContent from "./ItemContent";
 import { formatPrice } from "@/utils/formatPrice";
+import { SafeUser } from "@/types";
+import { useRouter } from "next/navigation";
 
-const CartClient = () => {
-  const { cartProducts,handleClearCart, cartTotalAmount } = useCart();
+interface CartClientProps {
+  currentUser: SafeUser | null;
+}
+
+const CartClient: React.FC<CartClientProps> = ({ currentUser }) => {
+  const { cartProducts, handleClearCart, cartTotalAmount } = useCart();
+  const router = useRouter();
   if (!cartProducts || cartProducts.length === 0) {
     return (
       <div className="flex flex-col items-center">
@@ -58,9 +65,17 @@ const CartClient = () => {
       <div
         className="border-t-[1.5px]
             border-slate-200 py-4 flex justify-between gap-4
-            ">
+            "
+      >
         <div className="w-[90px]">
-          <Button label="Clear Cart" onClick={() => {handleClearCart()}} small outline />
+          <Button
+            label="Clear Cart"
+            onClick={() => {
+              handleClearCart();
+            }}
+            small
+            outline
+          />
         </div>
         <div className="text-sm flex flex-col gap-1 items-start">
           <div className="flex justify-between w-full text-base font-semibold">
@@ -70,15 +85,20 @@ const CartClient = () => {
           <p className="text-slate-500">
             Taxes and shipping calculate at checkout
           </p>
-          <Button label="Checkout" onClick={()=>{
-            <Link
+          <Button
+            label={currentUser ? "Checkout" : "Login To Checkout"}
+            outline={currentUser ? false : true}
+            onClick={() => {
+              currentUser ? router.push("/checkout") : router.push("/login");
+            }}
+          />
+          <Link
             href={"/"}
             className="text-slate-500 flex items-center gap-1 mt-2"
           >
             <MdArrowBack />
             <span>Continue Shopping</span>
           </Link>
-          }} />
         </div>
       </div>
     </div>
