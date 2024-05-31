@@ -1,0 +1,13 @@
+@keyframes scaleAnimation {
+    0% {  }
+    50% {  
+            background: rebeccapurple;
+            border: 1px solid red;
+    }
+    100% {  background: white; }
+}
+
+.scaleAnimation {
+    animation: scaleAnimation 1s infinite;
+    margin-right: 50px;
+}

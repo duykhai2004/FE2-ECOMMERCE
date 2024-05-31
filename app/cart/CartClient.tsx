@@ -91,6 +91,7 @@ const CartClient: React.FC<CartClientProps> = ({ currentUser }) => {
             onClick={() => {
               currentUser ? router.push("/checkout") : router.push("/login");
             }}
+
           />
           <Link
             href={"/"}

@@ -1,6 +1,7 @@
+import { buffer } from "micro";
 import { NextApiRequest, NextApiResponse } from "next";
-import { buffer } from "stream/consumers";
 import Stripe from "stripe";
+
 
 export const config = {
   api: {
@@ -14,6 +15,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log("Webhook handler called");
   const buf = await buffer(req);
   const sig = req.headers["stripe-signature"];
 
@@ -32,8 +34,10 @@ export default async function handler(
   } catch (error) {
     return res.status(400).send(`Webhook Error: ${error}`);
   }
-
+  console.log("Event type: " + event.type);
   switch (event.type) {
+    
+    
     case "charge.succeeded":
       const charge: any = event.data.object as Stripe.Charge;
       if (typeof charge.payment_intent === "string") {
@@ -53,4 +57,6 @@ export default async function handler(
   }
 
   res.json({ received: true})
+  console.log("Webhook response sent successfully" + event.type);
 }
+

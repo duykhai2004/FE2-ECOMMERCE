@@ -2,6 +2,7 @@
 
 import React from "react";
 import { IconType } from "react-icons";
+//import style from "../../cart/cart.module.css"
 
 interface ButtonProps {
     label: string;
@@ -11,6 +12,7 @@ interface ButtonProps {
     custom?: string;
     icon?: IconType;
     onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    hasAnimation?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -27,6 +29,7 @@ const Button: React.FC<ButtonProps> = ({
             onClick={onClick}
             disabled={disabled}
             className={`
+                mt-5
                 disabled:opacity-70
                 disabled:cursor-not-allowed
                 rounded-md
