@@ -32,7 +32,7 @@ const ItemContent: React.FC<ItemContentProps> = ({ item }) => {
         col-span-2 justify-start
         flex
         gap-2
-        md: gap-4
+        md:gap-4
       ">
         <Link href={`/product/${item.id}`}>
           <div className="relative w-[70px] aspect-square">
