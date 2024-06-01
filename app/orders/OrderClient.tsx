@@ -18,7 +18,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import moment from "moment";
 
-interface ManageOrdersClientProps {
+interface OrdersClientProps {
   orders: ExtendedOrder[];
 }
 
@@ -26,7 +26,7 @@ type ExtendedOrder = Order & {
   user: User;
 };
 
-const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
+const OrdersClient: React.FC<OrdersClientProps> = ({ orders }) => {
   const router = useRouter();
   let rows: any = [];
 
@@ -56,7 +56,7 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
         );
       },
     },
-   
+
     {
       field: "paymentStatus",
       headerName: "Payment Status",
@@ -64,22 +64,23 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
       renderCell: (params) => {
         return (
           <div>
-            {params.row.paymentStatus === 'pending' ? (
+            {params.row.paymentStatus === "pending" ? (
               <Status
                 text="pending"
                 icon={MdAccessTimeFilled}
                 bg="bg-slate-200"
                 color="text-slate-700"
               />
-            ) : params.row.paymentStatus === 'complete' ? (
+            ) : params.row.paymentStatus === "complete" ? (
               <Status
                 text="Complete"
                 icon={MdDone}
                 bg="bg-green-200"
                 color="text-green-700"
               />
-            ) :(<></>
-           ) }
+            ) : (
+              <></>
+            )}
           </div>
         );
       },
@@ -92,30 +93,30 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
       renderCell: (params) => {
         return (
           <div>
-            {params.row.deliverStatus === 'pending' ? (
+            {params.row.deliverStatus === "pending" ? (
               <Status
                 text="pending"
                 icon={MdAccessTimeFilled}
                 bg="bg-slate-200"
                 color="text-slate-700"
               />
-            ) : params.row.deliverStatus === 'dispatched' ? (
+            ) : params.row.deliverStatus === "dispatched" ? (
               <Status
                 text="Dispatched"
                 icon={MdDeliveryDining}
                 bg="bg-purple-200"
                 color="text-purple-700"
               />
-            ): params.row.deliverStatus === 'delivered' ?
-            (
+            ) : params.row.deliverStatus === "delivered" ? (
               <Status
                 text="Delivered"
                 icon={MdDone}
                 bg="bg-green-200"
                 color="text-green-700"
               />
-            ) : <></>
-            }
+            ) : (
+              <></>
+            )}
           </div>
         );
       },
@@ -135,18 +136,6 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
         return (
           <div className="flex items-center justify-center gap-2 h-full">
             <ActionBtn
-              icon={MdDeliveryDining}
-              onClick={() => {
-                handleDispatch(params.row.id);
-              }}
-            />
-            <ActionBtn
-              icon={MdDone}
-              onClick={() => {
-                handleDeliver(params.row.id);
-              }}
-            />
-            <ActionBtn
               icon={MdRemoveRedEye}
               onClick={() => {
                 router.push(`/order/${params.row.id}`);
@@ -158,43 +147,10 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
     },
   ];
 
-  const handleDispatch = useCallback((id: string) => {
-    axios
-      .put("/api/order", {
-        id,
-        deliveryStatus: "dispatched",
-      })
-      .then((res) => {
-        toast.success("Order Dispatch!!!");
-        router.refresh();
-      })
-      .catch((error) => {
-        toast.error("Order something went wrong!!!");
-        console.log(error);
-      });
-  }, []);
-
-  const handleDeliver = useCallback((id: string) => {
-    axios
-      .put("/api/order", {
-        id,
-        deliveryStatus: "delivered",
-      })
-      .then((res) => {
-        toast.success("Order Delivered!!!");
-        router.refresh();
-      })
-      .catch((error) => {
-        toast.error("Order something went wrong!!!");
-        console.log(error);
-      });
-  }, []);
-  
-
   return (
     <div className="max-w-[1150px] m-auto text-xl">
       <div className="mb-4 mt-8">
-        <Heading title="Manage Orders" center />
+        <Heading title=" Orders" center />
       </div>
 
       <div style={{ height: 600, width: "100%" }}>
@@ -215,4 +171,4 @@ const ManageOrdersClient: React.FC<ManageOrdersClientProps> = ({ orders }) => {
   );
 };
 
-export default ManageOrdersClient;
+export default OrdersClient;

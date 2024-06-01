@@ -2,13 +2,19 @@ import { Container } from "@mui/material";
 import ProductDetails from "./ProductDetails";
 import ListRating from "./ListRating";
 import { products } from "@/utils/products";
+import getProductById from "@/actions/getProductById";
+import NullData from "@/app/components/products/NullData";
 
 interface IParams {
   productId?: string;
 }
 
-const Product = ({params}: {params:IParams}) => {
-  const product = products.find((item)=>item.id === params.productId);
+const Product = async ({params}: {params:IParams}) => {
+
+  const product = await getProductById(params);
+  if (!product) {
+    return <NullData title="No product"></NullData>
+  }
    return (
     <div className="p-8">
       <Container>

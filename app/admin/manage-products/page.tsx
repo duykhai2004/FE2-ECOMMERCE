@@ -1,6 +1,6 @@
 import Container from "@/app/components/Container";
 import ManageProductsClient from "./ManageProductsClient";
-import getProducts from "@/actions/getProduct";
+import getProducts from "@/actions/getProducts";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 import NullData from "@/app/components/products/NullData";
 
