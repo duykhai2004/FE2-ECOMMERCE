@@ -4,9 +4,6 @@ import { NextResponse } from "next/server";
 import { CartProductType } from "@/app/product/[productId]/ProductDetails";
 
 import { getCurrentUser } from "@/actions/getCurrentUser";
-import { error } from "console";
-import { products } from "@/utils/products";
-import { data } from "autoprefixer";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2024-04-10",
