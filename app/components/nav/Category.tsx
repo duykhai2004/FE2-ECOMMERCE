@@ -45,7 +45,7 @@ const Category: React.FC<CategoryProps> = ({ label, icon: Icon, selected }) => {
         justify-center gap-1 border-b-2 hover:text-slate-800 transition cursor-pointer
         ${
           selected
-            ? "text-slate-800 border-slate-800"
+            ? "text-slate-800 border-slate-800" 
             : "text-slate-500 border-transparent"
         }
     `}

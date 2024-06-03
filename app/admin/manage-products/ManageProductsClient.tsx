@@ -103,7 +103,7 @@ const ManageProductsClient: React.FC<ManageProductsClientProps> = ({
                 handleDelete(params.row.id, params.row.images);
             }} />
             <ActionBtn icon={MdRemoveRedEye} onClick={() => {
-                router.push(`product/${params.row.id}`);
+                router.push(`/product/${params.row.id}`);
             }} />
           </div>
         );
@@ -171,7 +171,7 @@ const ManageProductsClient: React.FC<ManageProductsClientProps> = ({
               paginationModel: { page: 0, pageSize: 5 },
             },
           }}
-          pageSizeOptions={[1, 2, 5, 10]}
+          pageSizeOptions={[5, 10]}
           checkboxSelection
           disableRowSelectionOnClick
         />

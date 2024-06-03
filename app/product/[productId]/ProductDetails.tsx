@@ -35,11 +35,11 @@ const Horizontal = () => {
 };
 
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
-  const { handleAddProductToCart,cartProducts } = useCart();
+  const { handleAddProductToCart, cartProducts } = useCart();
   const [isProductInCart, setIsProductInCart] = useState(false);
   const [cartProduct, setCartProduct] = useState<CartProductType>({
     id: product.id,
-    name: product.name, 
+    name: product.name,
     description: product.description,
     category: product.category,
     brand: product.brand,
@@ -47,18 +47,20 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
     quantity: 1,
     price: product.price,
   });
-  const router = useRouter()
+  const router = useRouter();
   console.log(cartProducts);
-  useEffect(()=>{
-  setIsProductInCart(false);
-  if (cartProducts) {
-    const existingIndex  = cartProducts.findIndex((item) => item.id === product.id);
+  useEffect(() => {
+    setIsProductInCart(false);
+    if (cartProducts) {
+      const existingIndex = cartProducts.findIndex(
+        (item) => item.id === product.id
+      );
 
-    if(existingIndex > -1){
-      setIsProductInCart(true);
+      if (existingIndex > -1) {
+        setIsProductInCart(true);
+      }
     }
-  }
-  },[cartProducts])
+  }, [cartProducts]);
 
   const productRating =
     product.reviews.reduce((acc: number, item: any) => item.rating + acc, 0) /
@@ -98,15 +100,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-      <ProductImage cartProuduct={cartProduct} product={product} handleColorSelect={handleColorSelect}/>
+      <ProductImage
+        cartProuduct={cartProduct}
+        product={product}
+        handleColorSelect={handleColorSelect}
+      />
       <div className="flex flex-col gap-1 text-slate-500 text-sm">
         <h2 className="text-3xl font-medium text-slate-700">{product.name}</h2>
         <div className="flex items-center gap-2">
           <Rating value={productRating} readOnly />
           <div>{product.reviews.length} reviews</div>
         </div>
-        <Horizontal />
-        <div className="text-justify">{product.description}</div>
         <Horizontal />
         <div>
           <span className="font-semibold">CATEGORY: </span>
@@ -120,34 +124,46 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product }) => {
           {product.inStock ? "In Stock" : "Out of Stock"}
         </div>
         <Horizontal />
-        {isProductInCart ? 
-        <>
-        <p className="mb-2 text-slate-500 flex items-center">
-          <MdCheckCircle className="text-teal-400" size={20}/>
-          <span>Product add to cart</span>
-        </p>
-        <div className="max-w-[300px]">
-          <Button  label="View Cart" onClick={()=>{
-          router.push('/cart')
-          }}/>
-        </div>
-        </> : <>
-        <SetColor
-          cartProduct={cartProduct}
-          images={product.images}
-          handleColorSelect={handleColorSelect}
-        />
-        <Horizontal />
-        <SetQuantity
-          cartProduct={cartProduct}
-          handleQtyIncrease={handleQtyIncrease}
-          handleQtyDecrease={handleQtyDecrease}
-        />
-        <Horizontal />
-        <div className="max-w-[300px]">
-          <Button outline label="ADD TO CART" onClick={() => handleAddProductToCart(cartProduct)} />
-        </div>
-        </>}
+        {isProductInCart ? (
+          <>
+            <p className="mb-2 text-slate-500 flex items-center">
+              <MdCheckCircle className="text-teal-400" size={20} />
+              <span>Product add to cart</span>
+            </p>
+            <div className="max-w-[300px]">
+              <Button
+                label="View Cart"
+                onClick={() => {
+                  router.push("/cart");
+                }}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <SetColor
+              cartProduct={cartProduct}
+              images={product.images}
+              handleColorSelect={handleColorSelect}
+            />
+            <Horizontal />
+            <SetQuantity
+              cartProduct={cartProduct}
+              handleQtyIncrease={handleQtyIncrease}
+              handleQtyDecrease={handleQtyDecrease}
+            />
+            <Horizontal />
+            <div className="max-w-[300px]">
+              <Button
+                outline
+                label="ADD TO CART"
+                onClick={() => handleAddProductToCart(cartProduct)}
+              />
+            </div>
+          </>
+        )}
+         <Horizontal />
+        <div className="text-justify" dangerouslySetInnerHTML={{ __html: product.description }} />
       </div>
     </div>
   );

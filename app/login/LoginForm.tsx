@@ -48,7 +48,7 @@ const LoginForm: React.FC<LoginFormProps> = ({currentUser}) => {
     }).then((callback) => {
       setIsLoading(false);
       if (callback?.ok) {
-        router.push('/cart')
+        router.push('/')
         router.refresh(
           
         );
@@ -97,6 +97,10 @@ const LoginForm: React.FC<LoginFormProps> = ({currentUser}) => {
         label={isLoading ? "Loading" : "Login"}
         onClick={handleSubmit(onSubmit)}
       />
+
+      
+
+
       <p>
         Do not have an account ?
         <Link className="underline" href="/register">

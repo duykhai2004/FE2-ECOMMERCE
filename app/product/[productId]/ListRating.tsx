@@ -7,11 +7,9 @@ import moment from "moment";
 
 interface ListRatingProps {
     product: any;
-
 }
 const ListRating: React.FC<ListRatingProps> = ({
     product
-
 }) => {
     if (product.reviews.length === 0) {
         return null;

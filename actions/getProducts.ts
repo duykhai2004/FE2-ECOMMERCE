@@ -8,10 +8,7 @@ export interface IProductParams {
 export default async function getProducts(params: IProductParams) {
   try {
     const { category, searchTerm } = params;
-    let searchString = searchTerm;
-    if (!searchTerm) {
-      searchString = "";
-    }
+    let searchString = searchTerm || "";
     let query: any = {};
     if (category) {
       query.category = category;
@@ -34,17 +31,17 @@ export default async function getProducts(params: IProductParams) {
       },
       include: {
         reviews: {
-            include: {
-                user: true
-            }, 
-            orderBy: {
-                createdDate: 'desc'
-            }
+          include: {
+            user: true
+          }, 
+          orderBy: {
+            createdDate: 'desc'
+          }
         }
       },
     });
     return products;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 }
