@@ -1,12 +1,5 @@
 import { CartProductType } from "@/app/product/[productId]/ProductDetails";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { set } from "react-hook-form";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 type CartContextType = {
@@ -31,19 +24,14 @@ interface Props {
 export const CartContextProvider = (props: Props) => {
   const [cartTotalQty, setCartTotalQty] = useState(0);
   const [cartTotalAmount, setCartTotalAmount] = useState(0);
-  const [cartProducts, setCartProducts] = useState<CartProductType[] | null>(
-    null
-  );
+  const [cartProducts, setCartProducts] = useState<CartProductType[] | null>(null);
   const [paymentIntent, setPaymentIntent] = useState<string | null>(null);
-  // console.log('qty', cartTotalQty);
-  // console.log('amount', cartTotalAmount);
-  
 
   useEffect(() => {
     const cartItems: any = localStorage.getItem("eShopCart-Items");
-    const cProducts: CartProductType[] | null = JSON.parse(cartItems);
+    const cProducts: CartProductType[] | null = cartItems ? JSON.parse(cartItems) : null;
     const eShopPaymentIntent: any = localStorage.getItem("eShopPaymentIntent");
-    const paymentIntent: string | null = JSON.parse(eShopPaymentIntent);
+    const paymentIntent: string | null = eShopPaymentIntent ? JSON.parse(eShopPaymentIntent) : null;
     setCartProducts(cProducts);
     setPaymentIntent(paymentIntent);
   }, []);
@@ -51,10 +39,9 @@ export const CartContextProvider = (props: Props) => {
   useEffect(() => {
     const getTotals = () => {
       if (cartProducts) {
-        const { total, qty } = cartProducts?.reduce(
+        const { total, qty } = cartProducts.reduce(
           (acc, item) => {
             const itemTotal = item.price * item.quantity;
-
             acc.total += itemTotal;
             acc.qty += item.quantity;
             return acc;
@@ -66,50 +53,71 @@ export const CartContextProvider = (props: Props) => {
         );
         setCartTotalQty(qty);
         setCartTotalAmount(total);
+      } else {
+        setCartTotalQty(0);
+        setCartTotalAmount(0);
       }
     };
     getTotals();
-  });
+  }, [cartProducts]);
 
-  const handleAddProductToCart = useCallback((product: CartProductType) => {
-    setCartProducts((prev) => {
-      const updatedCart = prev ? [...prev, product] : [product];
-      localStorage.setItem("eShopCart-Items", JSON.stringify(updatedCart));
-      return updatedCart;
-    });
-    toast.success("Product added to cart");
-  }, []);
+  const handleAddProductToCart = useCallback(
+    (product: CartProductType) => {
+      setCartProducts((prev) => {
+        let updatedCart;
+        if (prev) {
+          const existingProductIndex = prev.findIndex(
+            (item) =>
+              item.id === product.id &&
+              item.selectedImg.color === product.selectedImg.color
+          );
+          if (existingProductIndex > -1) {
+            updatedCart = prev.map((item, index) =>
+              index === existingProductIndex
+                ? { ...item, quantity: item.quantity + product.quantity }
+                : item
+            );
+          } else {
+            updatedCart = [...prev, product];
+          }
+        } else {
+          updatedCart = [product];
+        }
+        localStorage.setItem("eShopCart-Items", JSON.stringify(updatedCart));
+        return updatedCart;
+      });
+      toast.success("Product added to cart");
+    },
+    [setCartProducts]
+  );
 
   const handleRemoveProductFromCart = useCallback(
     (product: CartProductType) => {
       if (cartProducts) {
-        const fillteredProducts = cartProducts.filter((item) => {
-          return item.id !== product.id;
-        });
-        setCartProducts(fillteredProducts);
-        toast.success("Product removed");
-        localStorage.setItem(
-          "eShopCart-Items",
-          JSON.stringify(fillteredProducts)
+        const filteredProducts = cartProducts.filter(
+          (item) =>
+            !(item.id === product.id && item.selectedImg.color === product.selectedImg.color)
         );
+        setCartProducts(filteredProducts);
+        toast.success("Product removed");
+        localStorage.setItem("eShopCart-Items", JSON.stringify(filteredProducts));
       }
     },
     [cartProducts]
   );
+
   const handleCartQtyIncrease = useCallback(
     (product: CartProductType) => {
-      let updatedCart;
-      if (product.quantity === 99) {
-        return toast.error("Maximum quantity is 99");
+      if (product.quantity === 20) {
+        return toast.error("Maximum quantity is 20");
       }
       if (cartProducts) {
-        updatedCart = [...cartProducts];
-        const existingIndex = cartProducts.findIndex(
-          (item) => item.id === product.id
+        const updatedCart = cartProducts.map((item) =>
+          item.id === product.id &&
+          item.selectedImg.color === product.selectedImg.color
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
-        if (existingIndex > -1) {
-          updatedCart[existingIndex].quantity += 1;
-        }
         setCartProducts(updatedCart);
         localStorage.setItem("eShopCart-Items", JSON.stringify(updatedCart));
       }
@@ -119,18 +127,16 @@ export const CartContextProvider = (props: Props) => {
 
   const handleCartQtyDecrease = useCallback(
     (product: CartProductType) => {
-      let updatedCart;
       if (product.quantity === 1) {
-        return toast.error("Minimun quantity is 1");
+        return toast.error("Minimum quantity is 1");
       }
       if (cartProducts) {
-        updatedCart = [...cartProducts];
-        const existingIndex = cartProducts.findIndex(
-          (item) => item.id === product.id
+        const updatedCart = cartProducts.map((item) =>
+          item.id === product.id &&
+          item.selectedImg.color === product.selectedImg.color
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
         );
-        if (existingIndex > -1) {
-          updatedCart[existingIndex].quantity -= 1;
-        }
         setCartProducts(updatedCart);
         localStorage.setItem("eShopCart-Items", JSON.stringify(updatedCart));
       }
@@ -141,13 +147,17 @@ export const CartContextProvider = (props: Props) => {
   const handleClearCart = useCallback(() => {
     setCartProducts(null);
     setCartTotalQty(0);
+    setCartTotalAmount(0);
     localStorage.setItem("eShopCart-Items", JSON.stringify(null));
-  }, [cartProducts]);
+  }, []);
 
-  const handleSetPaymentIntent = useCallback((val : string | null)=> {
-    setPaymentIntent(val);
-    localStorage.setItem("eShopPaymentIntent", JSON.stringify(val));
-  },[paymentIntent])
+  const handleSetPaymentIntent = useCallback(
+    (val: string | null) => {
+      setPaymentIntent(val);
+      localStorage.setItem("eShopPaymentIntent", JSON.stringify(val));
+    },
+    []
+  );
 
   const value = {
     cartTotalQty,
@@ -168,7 +178,7 @@ export const CartContextProvider = (props: Props) => {
 export const useCart = () => {
   const context = useContext(CartContext);
   if (context === null) {
-    throw new Error("useCart phải được sử dụng trong CartProvider");
+    throw new Error("useCart must be used within CartProvider");
   }
   return context;
 };

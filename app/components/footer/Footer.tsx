@@ -33,8 +33,7 @@ const Footer = () => {
             
               <h3 className="text-base front-bold mb-2">About Us</h3>
               <p className="mb-2">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. At rem
-                necessitatibus, vel laborum nesciunt dicta explicabo nobis harum
+              If you’re like most Shopify store owners, when it comes to creating an About Us page, it’s probably a bit of an afterthought. “Oh yeah, I need to tell people something about my store, I’ll write up something that sounds good”
               </p>
               <p>
                 &copy;  {new Date().getFullYear()}

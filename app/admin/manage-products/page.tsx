@@ -7,6 +7,7 @@ import NullData from "@/app/components/products/NullData";
 const ManageProducts = async () => {
   const products = await getProducts({
     category: null,
+    isAdmin: true,
   });
   const currentUser = await getCurrentUser();
 
